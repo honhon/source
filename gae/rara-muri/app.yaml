@@ -9,14 +9,18 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /robots\.txt
+  static_files: robots.txt
+  upload: robots\.ico
+
 - url: /google124ce50fa0d93d82\.html
   static_files: google124ce50fa0d93d82.html
-  upload: google124ce50fa0d93d82.html
+  upload: google124ce50fa0d93d82\.html
 
 - url: /static
   static_dir: static
 
-- url: .*
+- url: /.*
   script: main.app
 
 libraries:
