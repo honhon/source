@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block title %}注目ワード : {{ word }} {% for keyword in keywords %},{{ keyword }}{%endfor%}{% endblock %}
+
+{% block contents %}
+{% if contents != "" %}
+    <h1>{{ word }}</h1>
+    {{ contents|striptags|linebreaks }}
+    <hr>
+{% endif %}
+
+<div id="main">
+注目ワードサーチ<br>
+{% for keyword in keywords %}
+    | <a href="https://www.google.co.jp/#q={{ keyword|urlencode }}" target="_blank">G</a>
+    | <a href="http://www.bing.com/search?q={{ keyword|urlencode }}" target="_blank">B</a>
+    | <a href="http://ja.wikipedia.org/wiki/{{ keyword|urlencode }}" target="_blank">W</a>
+    | <a href="http://www.amazon.co.jp/gp/search?ie=UTF8&camp=247&creative=1211&index=aps&linkCode=ur2&tag=honplalajp-22&keywords={{ keyword|urlencode }}" target="_blank">A</a>
+    | <a href="http://hb.afl.rakuten.co.jp/hgc/038bb0f4.d2ac142c.084d2821.4bfdc14b/?pc=http%3a%2f%2fsearch.rakuten.co.jp%2fsearch%2fmall%2f{{ keyword|urlencode|urlencode }}%2f-%2f%3fscid%3daf_link_urltxt&amp;m=http%3a%2f%2fm.rakuten.co.jp%2f" target="_blank">R</a>
+    | &nbsp;<a href="/words/detail/{{ keyword|urlencode }}/">{{ keyword }}</a>
+    <br>
+{% endfor %}
+</div>
+
+<div style="color:gray;">※ Google, Bing, Wikipedia, Amazon, Rakuten</div>
+<input type="text" id="q" value="{{ word }}" />
+<button id="btnSearch">検索</button>
+<br>
+<br>
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?t=honplalajp-22&o=9&p=13&l=st1&mode=books-jp&search={{ keywords.0|urlencode }}&fc1=000000&lt1=_blank&lc1=3366FF&bg1=FFFFFF&f=ifr" marginwidth="0" marginheight="0" width="468" height="60" border="0" frameborder="0" style="border:none;" scrolling="no"></iframe>
+<br>
+<hr>
+{% for index in indexes %}
+    {% for v in index %}
+        <a href="/words/search/{{ v|urlencode }}/">{{ v }}</a> &nbsp;&nbsp;
+    {% endfor %}
+    <br>
+{% endfor %}
+<br>
+<!-- Rakuten Widget FROM HERE --><script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="038bb0f4.d2ac142c.084d2821.4bfdc14b";rakuten_items="ctsmatch";rakuten_genreId=0;rakuten_size="468x60";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="off";rakuten_genre_title="off";rakuten_recommend="on";</script><script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script><!-- Rakuten Widget TO HERE -->
+<br>
+<script type="text/javascript"><!--
+amazon_ad_tag = "honplalajp-22"; amazon_ad_width = "468"; amazon_ad_height = "60";//--></script>
+<script type="text/javascript" src="http://ir-jp.amazon-adsystem.com/s/ads.js"></script>
+<br>
+<a href="/words/">search top</a><br> 
+<br>
+<br>
+<script>
+/*
+    var hon = {};
+    hon.search = function(json){
+        var output = "";
+        $("#main").html("Searching...");
+        if(json.AS.Results[0].Suggests){
+            var suggests = json.AS.Results[0].Suggests;
+            if(suggests.length > 0){
+                for(var i = 0; i < suggests.length; i++){
+                    var raw_txt = suggests[i]['Txt'];
+                    var txt = encodeURI(raw_txt);
+                    var url_g = "https://www.google.co.jp/#q=" + txt;
+                    var url_b = "http://www.bing.com/search?q=" + txt;
+                    var url_w = "http://ja.wikipedia.org/wiki/" + txt;
+                    var url_a = "http://www.amazon.co.jp/gp/search?ie=UTF8&camp=247&creative=1211&index=aps&keywords=" + txt + "&linkCode=ur2&tag=honplalajp-22";
+                    var url_r = "http://hb.afl.rakuten.co.jp/hgc/038bb0f4.d2ac142c.084d2821.4bfdc14b/?pc=http%3a%2f%2fsearch.rakuten.co.jp%2fsearch%2fmall%2f"
+                              + encodeURI(txt) + "%2f-%2f%3fscid%3daf_link_urltxt&amp;m=http%3a%2f%2fm.rakuten.co.jp%2f";
+                    output += '| <a href="' + url_g + '" target="_blank">G</a>'
+                            + '| <a href="' + url_b + '" target="_blank">B</a>'
+                            + '| <a href="' + url_w + '" target="_blank">W</a>'
+                            + '| <a href="' + url_a + '" target="_blank">A</a>'
+                            + '| <a href="' + url_r + '" target="_blank">R</a>'
+                            + '| &nbsp;<a href="' + url_g + '" target="_blank">' + raw_txt + '</a><br>'
+                }
+                output += "<br><hr>"
+                        + "G: Google<br>"
+                        + "B: Bing<br>"
+                        + "W: Wiki<br>"
+                        + "A: Amazon<br>"
+                        + "R: Rakuten<br>"
+                        + "<img src='http://ir-jp.amazon-adsystem.com/e/ir?t=honplalajp-22&l=ur2&o=9'><br>";
+            }
+        }
+        $("#main").html(output);
+    };
+    $(function(){
+        $("#btnSearch").click(function(){
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "http://www.bing.com/qsonhs.aspx?mkt=ja-JP&type=cb&cb=hon.search&o=p&q=" + encodeURI($("#q").val());
+            var firstScript = document.getElementsByTagName("script")[0];
+            firstScript.parentNode.insertBefore(script, firstScript);
+        });
+
+        $("#q").keyup(function(event){
+            if(event.keyCode == 13){
+                $("#btnSearch").trigger("click");
+            }
+        });
+//      $("#btnSearch").trigger("click");
+    });
+*/
+    $(function(){
+        $("#btnSearch").click(function(){
+            var url = "/words/";
+            if($("#q").val() != ""){
+                url += "search/" + encodeURI($("#q").val()) + "/"; 
+            }
+            location.href = url;
+        });
+
+        $("#q").keyup(function(event){
+            if(event.keyCode == 13){
+                $("#btnSearch").trigger("click");
+            }
+        });
+    });
+</script>
+{% endblock %}

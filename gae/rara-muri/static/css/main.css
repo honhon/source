@@ -1,0 +1,35 @@
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:0;
+  font-size:12px;
+}
+#header{
+  top:0;
+  left:0;
+  width:100%;
+  height:20px;
+  background-color:#ccf;
+}
+#contents{
+  height:100%;
+  padding:10px 10px 50px;
+}
+#footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:30px;
+  background-color:#ccf;
+  text-align:center;
+  padding:5px;
+}
+
+
+div#btnMore { text-align: center; width: 100%; padding: 5px; margin: 5px; border: 1px solid #cccccc; cursor: pointer; background-color: #eeeeee; display: none; }
+div.avatar { float: left; padding: 5px; }
+div.user { font-weight: bold; }
+div.tweet {}
+hr.clear { clear: both; }

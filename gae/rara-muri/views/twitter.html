@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+{% block title %}
+Twitter
+{% endblock %}
+
+{% block contents %}
+Twitterサーチ
+<input type="text" id="q" />
+<button id="btnSearch">検索</button>
+<button id="btnNew">new</button>
+<br>
+<div id='fMessage'></div>
+<div id='fData'></div>
+<div id="btnMore">more</div>
+
+<script>
+    var SEARCH_TYPE_INI  = 0;
+    var SEARCH_TYPE_NEW  = 1;
+    var SEARCH_TYPE_MORE = 2;
+    var REPEAT_TIME      = 5000; // 60s
+    var REPEAT_COUNT     = 20;
+    var timer_id          = '';
+    var timer_count       = 0;
+    var max_id = 0;
+    var min_id = 0;
+
+    $(document).ready(function(){
+//      timer_id = setInterval('loadNewContents("tbs")', REPEAT_TIME);
+        $("#btnSearch").click(function(){ load(SEARCH_TYPE_INI); });
+        $("#btnNew").click(function(){ load(SEARCH_TYPE_NEW); });
+        $("#btnMore").click(function(){ load(SEARCH_TYPE_MORE); });
+        $("#q").keyup(function(event){ if(event.keyCode == 13){ $("#btnSearch").trigger("click"); } });
+        function sleep(second){
+/*          var start = (new Date()).getTime();
+            while (true) {
+                if ((new Date()).getTime() >= start + second * 1000) { break; }
+            }
+*/
+        }
+
+        function load(search_type){
+$('#fMessage').html('Under maintenance').css('color', '#bf0000');
+return;
+            var keyword = '#' + $('#q').val();
+            var param = {q : keyword, lang: 'ja'};
+            $('#fMessage').html('loading...').css('color', '#000000');
+
+            if(search_type == SEARCH_TYPE_INI){
+                max_id = 0;
+                min_id = 0;
+            }else if(search_type == SEARCH_TYPE_NEW){
+                param.since_id = max_id;
+            }else if(search_type == SEARCH_TYPE_MORE){
+                param.max_id = min_id;
+            }
+            $.ajax({
+                url : 'http://search.twitter.com/search.json'
+                , data : param 
+                , dataType : 'jsonp'
+                , jsonp : 'callback'
+                , timeout:  5000
+                , complete : function(){}
+                , error : function(){
+                    $('#fMessage').html('ERROR').css('color', '#bf0000');
+                }
+                , success : function(json){
+                    $('#fMessage').html('&nbsp;');
+                    var ids = new Array();
+                    var contents = new Array();
+                    if(json['results'].length){
+                        for(var i = 0; i < json['results'].length; i++){
+                            var tw_id        = json['results'][i]['id'];
+                            var tw_text      = json['results'][i]['text'] + ' ';
+                            var tw_user      = json['results'][i]['from_user'];
+                            var tw_img_url   = json['results'][i]['profile_image_url'];
+                            var tw_create_at = json['results'][i]['created_at'];
+                            var tw_url       = 'http://twitter.com/' + tw_user;
+                            if(tw_id == max_id || tw_id == min_id) { continue; }
+                            var d = new Date(tw_create_at);
+                            tw_create_at = d.getFullYear() + '-' 
+                                + ((d.getMonth() >= 9)? (d.getMonth() + 1): '0' + d.getMonth()) + '-'
+                                + ((d.getDate() >= 10)? d.getDate(): '0' + d.getDate()) + ' '
+                                + ((d.getHours() >= 10)? d.getHours(): '0' + d.getHours()) + ':'
+                                + ((d.getMinutes() >= 10)? d.getMinutes(): '0' + d.getMinutes()) + ':'
+                                + ((d.getSeconds() >= 10)? d.getSeconds(): '0' + d.getSeconds());
+                            tw_text = tw_text.replace(/#(\S+)\s/ig, '<a href="http://twitter.com/search?q=%23$1" target="_blank">#$1</a> ');
+                            tw_text = tw_text.replace(/\s(http:\/\/)(\S+)\s/ig, '<a href="$1$2" target="_blank">$1$2</a> ');
+                            ids.unshift('#twid_' + tw_id);
+                            contents.unshift('<div id="twid_' + tw_id + '" style="display:block">'
+                            + '<div class="avatar"><a href="' + tw_url + '" target="_blank"><img src="' + tw_img_url + '" border="0" width="48"></a></div>'
+                            + '<div class="user"><a href="' + tw_url + '" target="_blank">' + tw_user + '</a></div>'
+                            + '<div class="tweet">' + tw_text + '</div>'
+                            + '<div class="date">' + tw_create_at + '</div>'
+                            + '<hr class="clear">'
+                            + '</div>');
+                            if(min_id == 0 || min_id > tw_id){ min_id = tw_id; }
+                            if(max_id == 0 || max_id < tw_id){ max_id = tw_id; }
+                        }
+                    }
+                    if(search_type == SEARCH_TYPE_INI){
+                        $('#fData').html('');
+                        for(var i = 0; i < contents.length; i++){
+                            $('#fData').prepend(contents[i]);
+                            $(ids[i]).show('slow');
+                            sleep(1);
+                        }
+                        if(contents.length > 0){
+                            $('#btnMore').show();
+                        }
+//                      timer_id = setInterval('load(SEARCH_TYPE_NEW)', REPEAT_TIME);
+                    }else if(search_type == SEARCH_TYPE_NEW){
+                        for(var i = 0; i < contents.length; i++){
+                            $('#fData').prepend(contents[i]);
+                            $(ids[i]).show('slow');
+                            sleep(1);
+                        }
+                    }else if(search_type == SEARCH_TYPE_MORE){
+                        for(var i = contents.length - 1; i >= 0; i--){
+                            $('#fData').append(contents[i]);
+                            $(ids[i]).show('slow');
+                            sleep(1);
+                        }
+                    }
+                }
+            }); 
+        }
+    }); 
+</script>
+
+{% endblock %}
