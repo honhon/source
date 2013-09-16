@@ -11,7 +11,7 @@ handlers:
 
 - url: /robots\.txt
   static_files: robots.txt
-  upload: robots\.ico
+  upload: robots\.txt
 
 - url: /google124ce50fa0d93d82\.html
   static_files: google124ce50fa0d93d82.html
