@@ -20,7 +20,8 @@ import json
 import webapp2
 import httplib
 import urllib
-from google.appengine.api import users
+import hashlib
+from google.appengine.api import memcache
 from google.appengine.ext.webapp import template
 from xml.etree import ElementTree
 
@@ -32,7 +33,6 @@ class TwitterHandler(webapp2.RequestHandler):
     def get(self):
         render(self, "twitter", [])
 
-#@cache_page(3600)
 class WordsHandler(webapp2.RequestHandler):
     def get(self, type="", word=""):
         word     = word.strip()
@@ -50,26 +50,34 @@ class WordsHandler(webapp2.RequestHandler):
         indexes.append("ぱ,ぴ,ぷ,ぺ,ぽ".split(","))
         indexes.append("a,b,c,d,e,f,g,h,i,j,k,l,m,n".split(","))
         indexes.append("o,p,q,r,s,t,u,v,w,x,y,z".split(","))
-
         try:
-            if type == "detail" and word != "":
-                contents = "Not found."
-                conn = httplib.HTTPConnection("ja.wikipedia.org")
-                conn.request("GET", "/wiki/%E7%89%B9%E5%88%A5:%E3%83%87%E3%83%BC%E3%82%BF%E6%9B%B8%E3%81%8D%E5%87%BA%E3%81%97/" + urllib.quote(word))
-                res = conn.getresponse()
-                data = res.read()
-                conn.close()
-                tree = ElementTree.fromstring(data)
-                contents = tree.find('.//{http://www.mediawiki.org/xml/export-0.8/}text').text
-            else:
+            mem_key = "list_" + hashlib.sha1(word).hexdigest()
+            data = memcache.get(mem_key);
+            if data is None:
                 conn = httplib.HTTPConnection("www.bing.com")
                 conn.request("GET", "/qsonhs.aspx?mkt=ja-JP&o=p&q=" + urllib.quote(word))
                 res = conn.getresponse()
                 data = res.read()
-                j = json.loads(data)
                 conn.close()
-                for item in j["AS"]["Results"][0]["Suggests"]:
-                    keywords.append(item["Txt"])
+                memcache.set(mem_key, data, 3600)
+            j = json.loads(data)
+            for item in j["AS"]["Results"][0]["Suggests"]:
+                keywords.append(item["Txt"])
+
+            if type == "detail" and word != "":
+                contents = "Not found."
+
+                mem_key = "detail_" + hashlib.sha1(word).hexdigest()
+                data = memcache.get(mem_key);
+                if data is None:
+                    conn = httplib.HTTPConnection("ja.wikipedia.org")
+                    conn.request("GET", "/wiki/%E7%89%B9%E5%88%A5:%E3%83%87%E3%83%BC%E3%82%BF%E6%9B%B8%E3%81%8D%E5%87%BA%E3%81%97/" + urllib.quote(word))
+                    res = conn.getresponse()
+                    data = res.read()
+                    conn.close()
+                    memcache.set(mem_key, data, 3600)
+                tree = ElementTree.fromstring(data)
+                contents = tree.find('.//{http://www.mediawiki.org/xml/export-0.8/}text').text
         except:
             pass
 
