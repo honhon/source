@@ -20,10 +20,10 @@ import sys
 import logging
 import json
 import webapp2
-import httplib
 import urllib
 import hashlib
 from google.appengine.api import memcache
+from google.appengine.api.urlfetch import fetch
 from google.appengine.ext.webapp import template
 from xml.etree import ElementTree
 
@@ -87,11 +87,8 @@ class WordsHandler(webapp2.RequestHandler):
     def getBingSuggestList(word):
         list = []
         try:
-            conn = httplib.HTTPConnection("www.bing.com")
-            conn.request("GET", "/qsonhs.aspx?mkt=ja-JP&o=p&q=" + urllib.quote(word))
-            res = conn.getresponse()
-            conn.close()
-            j = json.loads(res.read())
+            res = fetch(url="http://www.bing.com/qsonhs.aspx?mkt=ja-JP&o=p&q=" + urllib.quote(word), deadline=5)
+            j = json.loads(res.content)
             if j["AS"]["FullResults"] != 0:
                 for item in j["AS"]["Results"][0]["Suggests"]:
                     list.append(item["Txt"])
@@ -103,11 +100,8 @@ class WordsHandler(webapp2.RequestHandler):
     def getRakuten(word):
         data = None
         try:
-            conn = httplib.HTTPSConnection("app.rakuten.co.jp")
-            conn.request("GET", "/services/api/IchibaItem/Search/20130805?format=json&affiliateId=042e6582.7b4c74ad.042e6583.3f3ff0e9&hits=1&applicationId=d019e887005287225e7006eb6d0dd8b6&keyword=" + urllib.quote(word))
-            res = conn.getresponse()
-            conn.close()
-            j = json.loads(res.read())
+            res = fetch(url="https://app.rakuten.co.jp/services/api/IchibaItem/Search/20130805?format=json&affiliateId=042e6582.7b4c74ad.042e6583.3f3ff0e9&hits=1&applicationId=d019e887005287225e7006eb6d0dd8b6&keyword=" + urllib.quote(word), deadline=5)
+            j = json.loads(res.content)
             if j["count"] != 0:
                 data = j["Items"][0]["Item"]
         except:
@@ -118,11 +112,8 @@ class WordsHandler(webapp2.RequestHandler):
     def getWiki(word):
         data = ""
         try:
-            conn = httplib.HTTPConnection("ja.wikipedia.org")
-            conn.request("GET", "/wiki/%E7%89%B9%E5%88%A5:%E3%83%87%E3%83%BC%E3%82%BF%E6%9B%B8%E3%81%8D%E5%87%BA%E3%81%97/" + urllib.quote(word))
-            res = conn.getresponse()
-            conn.close()
-            body = res.read()
+            res = fetch(url="http://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:%E3%83%87%E3%83%BC%E3%82%BF%E6%9B%B8%E3%81%8D%E5%87%BA%E3%81%97/" + urllib.quote(word), deadline=5)
+            body = res.content
             if body is not None and body != "":
                 tree = ElementTree.fromstring(body)
                 pickup = tree.find('.//{http://www.mediawiki.org/xml/export-0.8/}text')
