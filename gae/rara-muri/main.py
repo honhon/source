@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 import os
+import sys
+import logging
 import json
 import webapp2
 import httplib
@@ -27,19 +29,105 @@ from xml.etree import ElementTree
 
 class MainHandler(webapp2.RequestHandler):
     def get(self, param):
-        render(self, "top", [])
+        render(self, "top", {})
 
 class TwitterHandler(webapp2.RequestHandler):
     def get(self):
-        render(self, "twitter", [])
+        render(self, "twitter", {})
 
 class WordsHandler(webapp2.RequestHandler):
+    CACHE = True
+
     def get(self, type="", word=""):
         word     = word.strip()
+        word1    = "" if word == "" else word.split()[0]
         contents = ""
         keywords = []
-        indexes  = []
+        indexes = self.getCharIndexes()
+        try:
+            mem_key = "list_" + hashlib.sha1(word).hexdigest()
+            keywords = self.getMem(mem_key)
+            if keywords is None:
+                keywords = self.getBingSuggestList(word)
+                self.setMem(mem_key, keywords)
 
+            if type == "detail" and word != "":
+                mem_key = "detail_" + hashlib.sha1(word).hexdigest()
+                contents = self.getMem(mem_key)
+                if contents is None:
+                    raku = self.getRakuten(word)
+                    if raku is None and word != word1:
+                        raku = self.getRakuten(word1)
+                    name    = ""
+                    caption = ""
+                    image   = ""
+                    url     = ""
+                    if raku is not None:
+                        name = raku["itemName"]
+                        caption = raku["itemCaption"]
+                        url = "http://hb.afl.rakuten.co.jp/hgc/042e6582.7b4c74ad.042e6583.3f3ff0e9/?pc=" + urllib.quote(raku["itemUrl"]) + "&m=" + urllib.quote(raku["itemUrl"])
+#                       url   = raku["affiliateUrl"]
+                        image = raku["mediumImageUrls"][0]["imageUrl"]
+                    data    = self.getWiki(word1)
+                    contents = {"name": name, "caption": caption, "url": url, "image": image, "data": data}
+                    self.setMem(mem_key, contents)
+        except:
+            logging.error(sys.exc_info())
+
+        render(self, "words", {"word":word, "indexes":indexes, "keywords":keywords, "contents":contents})
+
+    @staticmethod
+    def getBingSuggestList(word):
+        list = []
+        try:
+            conn = httplib.HTTPConnection("www.bing.com")
+            conn.request("GET", "/qsonhs.aspx?mkt=ja-JP&o=p&q=" + urllib.quote(word))
+            res = conn.getresponse()
+            conn.close()
+            j = json.loads(res.read())
+            if j["AS"]["FullResults"] != 0:
+                for item in j["AS"]["Results"][0]["Suggests"]:
+                    list.append(item["Txt"])
+        except:
+            logging.error(sys.exc_info())
+        return list
+
+    @staticmethod
+    def getRakuten(word):
+        data = None
+        try:
+            conn = httplib.HTTPSConnection("app.rakuten.co.jp")
+            conn.request("GET", "/services/api/IchibaItem/Search/20130805?format=json&affiliateId=042e6582.7b4c74ad.042e6583.3f3ff0e9&hits=1&applicationId=d019e887005287225e7006eb6d0dd8b6&keyword=" + urllib.quote(word))
+            res = conn.getresponse()
+            conn.close()
+            j = json.loads(res.read())
+            if j["count"] != 0:
+                data = j["Items"][0]["Item"]
+        except:
+            logging.error(sys.exc_info())
+        return data
+
+    @staticmethod
+    def getWiki(word):
+        data = ""
+        try:
+            conn = httplib.HTTPConnection("ja.wikipedia.org")
+            conn.request("GET", "/wiki/%E7%89%B9%E5%88%A5:%E3%83%87%E3%83%BC%E3%82%BF%E6%9B%B8%E3%81%8D%E5%87%BA%E3%81%97/" + urllib.quote(word))
+            res = conn.getresponse()
+            conn.close()
+            body = res.read()
+            if body is not None and body != "":
+                tree = ElementTree.fromstring(body)
+                pickup = tree.find('.//{http://www.mediawiki.org/xml/export-0.8/}text')
+                if pickup is not None:
+                    data = pickup.text
+        except:
+            logging.error(sys.exc_info())
+        return data
+
+    @staticmethod
+    def getCharIndexes():
+        indexes = []
         indexes.append("あ,い,う,え,お,か,き,く,け,こ".split(","))
         indexes.append("さ,し,す,せ,そ,た,ち,つ,て,と".split(","))
         indexes.append("な,に,ぬ,ね,の,は,ひ,ふ,へ,ほ".split(","))
@@ -50,41 +138,20 @@ class WordsHandler(webapp2.RequestHandler):
         indexes.append("ぱ,ぴ,ぷ,ぺ,ぽ".split(","))
         indexes.append("a,b,c,d,e,f,g,h,i,j,k,l,m,n".split(","))
         indexes.append("o,p,q,r,s,t,u,v,w,x,y,z".split(","))
-        try:
-            mem_key = "list_" + hashlib.sha1(word).hexdigest()
-            data = memcache.get(mem_key);
-            if data is None:
-                conn = httplib.HTTPConnection("www.bing.com")
-                conn.request("GET", "/qsonhs.aspx?mkt=ja-JP&o=p&q=" + urllib.quote(word))
-                res = conn.getresponse()
-                data = res.read()
-                conn.close()
-                memcache.set(mem_key, data, 3600)
-            j = json.loads(data)
-            for item in j["AS"]["Results"][0]["Suggests"]:
-                keywords.append(item["Txt"])
+        return indexes
 
-            if type == "detail" and word != "":
-                contents = "Not found."
+    def setMem(self, key, val):
+        if self.CACHE == True:
+            memcache.set(key, val)
 
-                mem_key = "detail_" + hashlib.sha1(word).hexdigest()
-                data = memcache.get(mem_key);
-                if data is None:
-                    conn = httplib.HTTPConnection("ja.wikipedia.org")
-                    conn.request("GET", "/wiki/%E7%89%B9%E5%88%A5:%E3%83%87%E3%83%BC%E3%82%BF%E6%9B%B8%E3%81%8D%E5%87%BA%E3%81%97/" + urllib.quote(word))
-                    res = conn.getresponse()
-                    data = res.read()
-                    conn.close()
-                    memcache.set(mem_key, data, 3600)
-                tree = ElementTree.fromstring(data)
-                contents = tree.find('.//{http://www.mediawiki.org/xml/export-0.8/}text').text
-        except:
-            pass
-
-        render(self, "words", {"word":word, "indexes":indexes, "keywords":keywords, "contents":contents})
+    def getMem(self, key):
+        if self.CACHE == True:
+            return memcache.get(key)
+        return None
 
 def render(self, tpl, params):
     path = os.path.join(os.path.dirname(__file__), 'views/' + tpl + '.html')
+    params.update({"os":os})
     self.response.out.write(template.render(path, params))
 
 app = webapp2.WSGIApplication([

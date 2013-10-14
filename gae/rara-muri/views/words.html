@@ -4,7 +4,22 @@
 {% block contents %}
 {% if contents != "" %}
     <h1>{{ word }}</h1>
-    {{ contents|striptags|linebreaks }}
+    {% if contents.image != "" %}
+        <a href="{{ contents.url }}" target="_blank"><img src="{{ contents.image }}"></a>
+    {% endif %}
+    <br>
+    <a href="{{ contents.url }}" target="_blank">{{ contents.name }}</a>
+    <br>
+    {{ contents.caption }}
+    <br>
+    <a href="http://hb.afl.rakuten.co.jp/hsc/11da7743.240dd2c1.0b629ec0.86c14b47/" target="_blank"><img src="http://hbb.afl.rakuten.co.jp/hsb/11da7743.240dd2c1.0b629ec0.86c14b47/" border="0"></a>
+    <br>
+    <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+    <a href="http://webservice.rakuten.co.jp/" target="_blank"><img src="http://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a>
+    <!-- Rakuten Web Services Attribution Snippet TO HERE -->
+    <br>
+
+    {{ contents.data|striptags|linebreaks }}
     <hr>
 {% endif %}
 
@@ -36,7 +51,7 @@
     <br>
 {% endfor %}
 <br>
-<!-- Rakuten Widget FROM HERE --><script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="038bb0f4.d2ac142c.084d2821.4bfdc14b";rakuten_items="ctsmatch";rakuten_genreId=0;rakuten_size="468x60";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="off";rakuten_genre_title="off";rakuten_recommend="on";</script><script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script><!-- Rakuten Widget TO HERE -->
+<!-- Rakuten Widget FROM HERE --<script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="038bb0f4.d2ac142c.084d2821.4bfdc14b";rakuten_items="ctsmatch";rakuten_genreId=0;rakuten_size="468x60";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="off";rakuten_genre_title="off";rakuten_recommend="on";</script><script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script>!-- Rakuten Widget TO HERE -->
 <br>
 <script type="text/javascript"><!--
 amazon_ad_tag = "honplalajp-22"; amazon_ad_width = "468"; amazon_ad_height = "60";//--></script>
