@@ -35,6 +35,12 @@ class TwitterHandler(webapp2.RequestHandler):
     def get(self):
         render(self, "twitter", {})
 
+class ClearHandler(webapp2.RequestHandler):
+    def get(self):
+        memcache.flush_all()
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Cleared !')
+
 class WordsHandler(webapp2.RequestHandler):
     CACHE = True
 
@@ -48,6 +54,7 @@ class WordsHandler(webapp2.RequestHandler):
             mem_key = "list_" + hashlib.sha1(word).hexdigest()
             keywords = self.getMem(mem_key)
             if keywords is None:
+                logging.debug("get keywords from bing api")
                 keywords = self.getBingSuggestList(word)
                 self.setMem(mem_key, keywords)
 
@@ -142,11 +149,14 @@ class WordsHandler(webapp2.RequestHandler):
 
     def setMem(self, key, val):
         if self.CACHE == True:
-            memcache.set(key, val)
+            logging.debug("set mem: " + key)
+            memcache.set(key, val, 3600)
 
     def getMem(self, key):
         if self.CACHE == True:
-            return memcache.get(key)
+            logging.debug("get mem: " + key)
+            mem = memcache.get(key)
+            return None if mem == False else mem
         return None
 
 def render(self, tpl, params):
@@ -158,5 +168,6 @@ app = webapp2.WSGIApplication([
     ('/twitter/', TwitterHandler)
   , ('/words/', WordsHandler)
   , ('/words/(.*)/(.*)/', WordsHandler)
+  , ('/clear/', ClearHandler)
   , ('/(.*)', MainHandler)
 ], debug=True)
