@@ -87,7 +87,7 @@ class WordsHandler(webapp2.RequestHandler):
     def getBingSuggestList(word):
         list = []
         try:
-            res = fetch(url="http://www.bing.com/qsonhs.aspx?mkt=ja-JP&o=p&q=" + urllib.quote(word), deadline=5)
+            res = fetch(url="http://sg1.api.bing.com/qsonhs.aspx?mkt=ja-JP&o=p&q=" + urllib.quote(word), deadline=5)
             j = json.loads(res.content)
             if j["AS"]["FullResults"] != 0:
                 for item in j["AS"]["Results"][0]["Suggests"]:
