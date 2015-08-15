@@ -1,0 +1,82 @@
+*			{font-size:12px;}
+form		{margin:0px;}
+body		{margin:0px; color:#333333;}
+button		{cursor:pointer;}
+textarea	{overflow:auto;}
+iframe		{margin:0px; padding:0px;}
+fieldset	{text-align:left; padding:5px 0px 5px 10px; width:90%;}
+a			{text-decoration:none;}
+a:link		{color:#3333cc;}
+a:visited	{color:#3333cc;}
+a:hover		{color:#ff3333;}
+.right		{text-align:right;}
+.left		{text-align:left;}
+.center		{text-align:center;}
+
+div.header1	{background-color:#334455;
+			 text-align:left;
+			 padding:8px 3px 2px 3px;}
+a.header1	{color:#ffffff;
+			 font-size:24px;
+			 font-weight:bold;}
+div.header2	{background-color:#99ccaa;
+			 font-weight:bold;
+			 font-size:16px;
+			 text-align:right;
+			 padding:0px 6px 0px 0px;}
+a.header2	{color:#991100;
+			 padding:0px 3px 0px;}
+div.footer1	{background-color:#99ccaa;
+			 color:white;
+			 font-weight:bold;
+			 font-size:16px;}
+div.footer2	{color:gray;
+			 font-size:16px;}
+h1.menu		{background-color:#ddffdd;
+			 color:orange;
+			 text-align:left;
+			 margin:0px;
+			 padding:3px 3px 3px 6px;}
+h2.menu		{text-align:left;
+			 margin:0px;
+			 padding:3px 3px 3px 10px;}
+h1#subtitle	{text-align:left;margin:0px;color:gray;}
+.subtitle	{color:orange;}
+#frameMain		{width:800px}
+#frameWrap		{float:left;width:540px;}
+#frameCenter	{float:right;width:370px;}
+#frameLeft		{float:right;width:170px;}
+#frameRight		{float:right;width:260px;}
+#frame2Left		{float:right;width:230px;}
+#frame2Right	{float:right;width:570px;}
+
+/*
+hr			{border:5px dotted gray;}
+.rss{text-align:left;
+padding:1px1px0px12px;}
+.envth{background-color:#aabbcc;}
+.envtd{background-color:#ddeeff;}
+table.doc{width:98%;}
+.envtd{background-color:#ddeeff;}
+table.doc{width:98%;}
+.docth{background-color:#aabbcc;}
+.doctd{background-color:#ddeeff;}
+.docTitle{text-align:left;font-weight:bold;font-size:18px;}
+.docContents{text-align:left;padding-left:12px;}
+button.min{cursor:hand;
+width:20px;}
+button.now{width:36px;}
+.sat{color:blue;background-color:#ccccff;text-align:right;}
+.sun{color:red;background-color:#ffcccc;text-align:right;}
+.day{color:gray;background-color:#eeeeee;text-align:right;}
+.today{color:green;background-color:#ccffcc;text-align:right;font-weight:bold;}
+#idDate{color:gray;}
+#idTime{color:gray;}
+table.bankth{background-color:#cceedd;text-align:left;}
+table.banktd{background-color:#eeffee;}
+table.bankkanaa{font-size:14px;}
+table.bankkanatd{text-align:center;}
+
+table.postth{background-color:#cceedd;text-align:left;}
+table.posttd{background-color:#eeffee;}
+*/

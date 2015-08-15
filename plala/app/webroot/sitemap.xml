@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
+	<url><loc>http://hon.plala.jp/</loc><priority>1.0</priority><changefreq>daily</changefreq></url>
+	<url><loc>http://hon.plala.jp/p/bank/</loc><changefreq>daily</changefreq></url>
+	<url><loc>http://hon.plala.jp/p/post/</loc><changefreq>daily</changefreq></url>
+	<url><loc>http://hon.plala.jp/p/mobile_bank/</loc><changefreq>daily</changefreq></url>
+	<url><loc>http://hon.plala.jp/p/mobile_post/</loc><changefreq>daily</changefreq></url>
+	<url><loc>http://hon.plala.jp/p/toybox/ip/</loc></url>
+	<url><loc>http://hon.plala.jp/p/toybox/color/</loc></url>
+	<url><loc>http://hon.plala.jp/p/toybox/env/</loc></url>
+	<url><loc>http://hon.plala.jp/p/toybox/encode/</loc></url>
+	<url><loc>http://hon.plala.jp/p/toybox/googlemaps/</loc></url>
+	<url><loc>http://hon.plala.jp/p/toybox/amazon/</loc></url>
+	<url><loc>http://hon.plala.jp/p/dbtool/</loc></url>
+</urlset>
+
