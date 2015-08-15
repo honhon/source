@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block title %}エンコード デコード: url_encode, url_decode, base64 encode, base64 decode, md5, sha1{% endblock %}
+{% block description %}文字列のエンコード、デコードを行います。対象は、urlencode, base64, md5, sha1 になります{% endblock %}
+{% block keywords %}エンコード,デコード,encode,decode,urlencode,base64,md5,sha1,文字列{% endblock %}
+
+{% block contents %}
+<h1>エンコード / デコード</h1>
+<div class="row">
+
+  <div class="col-sm-3">
+    <div class="list-group" id="tab_list">
+      <a href="#urlencode" class="list-group-item" data-toggle="tab">url_encode</a>
+      <a href="#base64"    class="list-group-item" data-toggle="tab">base64</a>
+      <a href="#md5"       class="list-group-item" data-toggle="tab">md5</a>
+      <a href="#sha1"      class="list-group-item" data-toggle="tab">sha1</a>
+    </div>
+  </div>
+
+  <div class="col-sm-6">
+    <form class="form-horizontal" role="form">
+      <div class="form-group">
+        <div class="btn-group pull-right" id="char_set" style="position:absolute;right:-1px">
+          <button class="btn btn-default" value="UTF-8">UTF-8</button>
+          <button class="btn btn-default" value="EUC-JP">EUC-JP</button>
+          <button class="btn btn-default" value="SJIS">Shift-JIS</button>
+        </div>
+        <textarea class="form-control" rows="10" id="request_text"></textarea>
+      </div>
+      <div class="tab-content">
+        <div class="tab-pane" id="urlencode">
+          <div class="form-group">
+            <button class="btn btn-success form-control" id="btn_urlencode" type="button">URL ENCODE / エンコード</button>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-success form-control" id="btn_urldecode" type="button">URL DECODE / デコード</button>
+          </div>
+        </div>
+        <div class="tab-pane" id="base64">
+          <div class="form-group">
+            <button class="btn btn-success form-control" id="btn_base64_encode" type="button">BASE64 ENCODE / エンコード</button>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-success form-control" id="btn_base64_decode" type="button">BASE64 DECODE / デコード</button>
+          </div>
+        </div>
+        <div class="tab-pane" id="md5">
+          <div class="form-group">
+            <button class="btn btn-success form-control" id="btn_md5" type="button">MD5 HASH / ハッシュ</button>
+          </div>
+        </div>
+        <div class="tab-pane" id="sha1">
+          <div class="form-group">
+            <button class="btn btn-success form-control" id="btn_sha1" type="button">SHA1 HASH / ハッシュ</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="progress progress-striped" id="progress" style="margin-top:20px;">
+      <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+    </div>
+    <div id="result" style="padding-top:12px;"></div>
+  </div>
+
+  <div class="col-sm-3" style="text-align:center">
+    <table><tr>
+      <td style="vertical-align:top;">
+        <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.co.jp/widgets/q?ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fhonplalajp-22%2F8009%2F228c88a3-b718-4e8a-b381-122fd1270929&Operation=GetScriptTemplate"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.co.jp/widgets/q?ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fhonplalajp-22%2F8009%2F228c88a3-b718-4e8a-b381-122fd1270929&Operation=NoScript">Amazon.co.jp ウィジェット</A></NOSCRIPT>
+      </td>
+      <td style="vertical-align:top;">
+        <!-- Rakuten Widget FROM HERE --><script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="038bb0f4.d2ac142c.084d2821.4bfdc14b";rakuten_items="ranking";rakuten_genreId=0;rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="on";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="off";</script><script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script><!-- Rakuten Widget TO HERE -->
+      </td>
+    </tr></table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}IP計算{% endblock %}
+{% block description %}IP計算: IPアドレス（ipv4）のマスク値から、IPレンジ,ネットワークアドレス,ブロードキャストアドレスを求めます{% endblock %}
+{% block keywords %}IP計算,IP計算機,IPアドレス,IPレンジ,ネットワークアドレス,ブロードキャストアドレス,ip,address,broadcast,network,range{% endblock %}
+
+{% block contents %}
+<h1>IP計算</h1>
+
+<div class="row">
+  <div class="col-sm-8">
+    <h3> -- IPレンジ, ネットワークIP, ブロードキャストIP --</h3>
+    <div>&nbsp;</div>
+    <input id="ip1" type="text" value="" size="3"> .
+    <input id="ip2" type="text" value="" size="3"> .
+    <input id="ip3" type="text" value="" size="3"> .
+    <input id="ip4" type="text" value="" size="3"> /
+    <select id="mask">
+      {% for i in mask %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-primary" id="btnCalc">CALC</button>
+    <div>&nbsp;</div>
+    <div id="result"></div>
+  </div>
+
+  <div class="col-sm-4">
+    <table><tr>
+      <td style="vertical-align:top;">
+        <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.co.jp/widgets/q?ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fhonplalajp-22%2F8009%2F228c88a3-b718-4e8a-b381-122fd1270929&Operation=GetScriptTemplate"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.co.jp/widgets/q?ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fhonplalajp-22%2F8009%2F228c88a3-b718-4e8a-b381-122fd1270929&Operation=NoScript">Amazon.co.jp ウィジェット</A></NOSCRIPT>
+      </td>
+      <td style="vertical-align:top;">
+        <!-- Rakuten Widget FROM HERE --><script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="038bb0f4.d2ac142c.084d2821.4bfdc14b";rakuten_items="ranking";rakuten_genreId=0;rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="on";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="off";</script><script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script><!-- Rakuten Widget TO HERE -->
+      </td>
+    </tr></table>
+  </div>
+</div>
+
+{% endblock %}

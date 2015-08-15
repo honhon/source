@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block title %}注目ワード : {{ word }} {% for keyword in keywords %},{{ keyword }}{%endfor%}{% endblock %}
+{% block description %}今旬な注目キーワードを一覧表示します {{ word }} {% for keyword in keywords %},{{ keyword }}{%endfor%}{% endblock %}
+{% block keywords %}注目ワード{% for keyword in keywords %},{{ keyword }}{%endfor%},{{ word }}{% endblock %}
+{% block contents %}
+<h1>注目ワードサーチ</h1>
+<div class="row">
+  <div class="col-sm-6">
+{% if contents != None  %}
+    <h2>{{ word }}</h2>
+    <table><tr>
+      {% if contents.image != "" %}
+        <td><a href="{{ contents.url }}" target="_blank"><img src="{{ contents.image }}"></a></td>
+      {% endif %}
+      <td><a href="{{ contents.url }}" target="_blank">{{ contents.name }}</a></td>
+    </tr></table>
+    {% if contents.caption != "" %}
+      <div class="well">{{ contents.caption }}</div>
+    {% endif %}
+    {% if contents.data != "" %}
+      <div class="well">{{ contents.data|striptags|linebreaks }}</div>
+    {% endif %}
+{% endif %}
+
+{% for keyword in keywords %}
+    <div>
+    | <a href="https://www.google.co.jp/#q={{ keyword|urlencode }}" target="_blank">G</a>
+    | <a href="http://www.bing.com/search?q={{ keyword|urlencode }}" target="_blank">B</a>
+    | <a href="http://ja.wikipedia.org/wiki/{{ keyword|urlencode }}" target="_blank">W</a>
+    | <a href="http://www.amazon.co.jp/gp/search?ie=UTF8&camp=247&creative=1211&index=aps&linkCode=ur2&tag=honplalajp-22&keywords={{ keyword|urlencode }}" target="_blank">A</a>
+    | <a href="http://hb.afl.rakuten.co.jp/hgc/038bb0f4.d2ac142c.084d2821.4bfdc14b/?pc=http%3a%2f%2fsearch.rakuten.co.jp%2fsearch%2fmall%2f{{ keyword|urlencode|urlencode }}%2f-%2f%3fscid%3daf_link_urltxt&amp;m=http%3a%2f%2fm.rakuten.co.jp%2f" target="_blank">R</a>
+    | &nbsp;<a href="/words/detail/{{ keyword|urlencode }}/">{{ keyword }}</a>
+    </div>
+{% endfor %}
+
+    <div style="color:gray;">※ Google, Bing, Wikipedia, Amazon, Rakuten</div>
+    <input type="text" id="q" value="{{ word }}" />
+    <button id="btnSearch">検索</button>
+    <hr>
+{% for index in indexes %}
+    {% for v in index %}
+        <a href="/words/search/{{ v|urlencode }}/">{{ v }}</a> &nbsp;&nbsp;
+    {% endfor %}
+    <br>
+{% endfor %}
+    <br>
+    <a href="/words/">注目ワードサーチトップ</a>へ
+  </div>
+  <div class="col-sm-6" style="text-align:center;">
+    <div>
+      <table style="width:100%"><tr>
+      {% if contents != None  %}
+        <td style="vertical-align:top;">
+          <iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?t=honplalajp-22&o=9&p=30&l=st1&mode=books-jp&search={{ word|urlencode }}&fc1=000000&lt1=_blank&lc1=3366FF&bg1=FFFFFF&f=ifr" marginwidth="0" marginheight="0" width="350" height="600" border="0" frameborder="0" style="border:none;" scrolling="no"></iframe>
+        </td>
+      {% endif %}
+      <td style="vertical-align:top;">
+        <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.co.jp/widgets/q?ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fhonplalajp-22%2F8009%2F228c88a3-b718-4e8a-b381-122fd1270929&Operation=GetScriptTemplate"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.co.jp/widgets/q?ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fhonplalajp-22%2F8009%2F228c88a3-b718-4e8a-b381-122fd1270929&Operation=NoScript">Amazon.co.jp ウィジェット</A></NOSCRIPT>
+      </td>
+      </tr></table>
+    </div>
+    <div>
+      <a href="http://hb.afl.rakuten.co.jp/hsc/11da7743.240dd2c1.0b629ec0.86c14b47/" target="_blank"><img src="http://hbb.afl.rakuten.co.jp/hsb/11da7743.240dd2c1.0b629ec0.86c14b47/" border="0"></a>
+    </div>
+  </div>
+</div>
+
+<div>
+<!-- Rakuten Widget FROM HERE --><script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="038bb0f4.d2ac142c.084d2821.4bfdc14b";rakuten_items="ranking";rakuten_genreId=0;rakuten_size="728x200";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="off";</script><script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script><!-- Rakuten Widget TO HERE -->
+</div>
+
+{% endblock %}
