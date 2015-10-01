@@ -1,0 +1,15 @@
+set fileformat=unix
+set softtabstop=4
+set ignorecase
+set autoindent
+set hlsearch
+"set cursorline
+set fileencodings=utf-8,euc-jp,iso-2022-jp,cp932
+set backspace=indent,eol,start
+set expandtab
+set list
+set listchars=tab:^.
+syntax   on
+filetype on
+highlight Notice ctermbg=green
+match Notice '\s\+$'
